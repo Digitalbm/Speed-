@@ -1,0 +1,438 @@
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedometer Circle</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom, #d7e9f7, #a0c4e2);
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+        }
+        .speedometer {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            border: 10px solid #ccc;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        .speedometer::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 10px;
+            height: 10px;
+            background: #000;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .needle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 2px;
+            height: 120px;
+            background: red;
+            transform-origin: bottom;
+            transform: translate(-50%, -100%) rotate(-120deg);
+            transition: transform 0.05s ease-out;
+        }
+        .speedometer .numbers {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+        }
+        .speedometer .numbers span {
+            position: absolute;
+        }
+        .speedometer .numbers span:nth-child(1) { transform: rotate(-60deg) translate(120px) rotate(60deg); }
+        .speedometer .numbers span:nth-child(2) { transform: rotate(-30deg) translate(120px) rotate(30deg); }
+        .speedometer .numbers span:nth-child(3) { transform: rotate(0deg) translate(120px) rotate(0deg); }
+        .speedometer .numbers span:nth-child(4) { transform: rotate(30deg) translate(120px) rotate(-30deg); }
+        .speedometer .numbers span:nth-child(5) { transform: rotate(60deg) translate(120px) rotate(-60deg); }
+        .speedometer .numbers span:nth-child(6) { transform: rotate(90deg) translate(120px) rotate(-90deg); }
+        .speedometer .numbers span:nth-child(7) { transform: rotate(120deg) translate(120px) rotate(-120deg); }
+        .speedometer .numbers span:nth-child(8) { transform: rotate(150deg) translate(120px) rotate(-150deg); }
+        .speedometer .numbers span:nth-child(9) { transform: rotate(180deg) translate(120px) rotate(-180deg); }
+        .speedometer .numbers span:nth-child(10) { transform: rotate(210deg) translate(120px) rotate(-210deg); }
+        .speedometer .numbers span:nth-child(11) { transform: rotate(240deg) translate(120px) rotate(-240deg); }
+        .speedometer .numbers span:nth-child(12) { transform: rotate(270deg) translate(120px) rotate(-270deg); }
+        .speedometer .numbers span:nth-child(13) { transform: rotate(300deg) translate(120px) rotate(-300deg); }
+        .speedometer .numbers span:nth-child(14) { transform: rotate(330deg) translate(120px) rotate(-330deg); }
+        .speedometer .numbers span:nth-child(15) { transform: rotate(360deg) translate(120px) rotate(-360deg); }
+        .speedometer .center-text {
+            position: absolute;
+            top: 55%;
+            width: 100%;
+            text-align: center;
+            font-size: 20px;
+        }
+        .speedometer .center-text .speed {
+            font-size: 14px;
+        }
+        .speed-display {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            text-align: center;
+            font-size: 20px;
+            background-color: #f0f8ff;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        .container {
+            text-align: center;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+        .button {
+            padding: 10px;
+            font-size: 18px;
+            cursor: pointer;
+            background-color: #AFEEEE;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            transition: background-color 0.3s ease;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 900;
+        }
+        .button:hover {
+            background-color: #AFEEEE;
+        }
+        .dropdown {
+            display: none;
+            margin-top: 20px;
+        }
+        .dropdown select {
+            padding: 10px;
+            font-size: 16px;
+            background-color: #000;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .audio-container {
+            display: none;
+        }
+        .dropdown select option:nth-child(2) {
+            background-color: #FF5733;
+        }
+        .dropdown select option:nth-child(3) {
+            background-color: #33FF57;
+        }
+        .dropdown select option:nth-child(4) {
+            background-color: #3357FF;
+        }
+        .dropdown select option:nth-child(5) {
+            background-color: #FF33A1;
+        }
+        .dropdown select option:nth-child(6) {
+            background-color: #FF8C33;
+        }
+        .dropdown select option:nth-child(7) {
+            background-color: #8C33FF;
+        }
+        .dropdown select option:nth-child(8) {
+            background-color: #33FFF5;
+        }
+        .dropdown select option:nth-child(9) {
+            background-color: #FF3333;
+        }
+        .input-container {
+            margin-top: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+        .input-container input {
+            width: 150px;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            background-color: #ffcccb;
+            text-align: center;
+            font-weight: 900;
+        }
+        .play-button, .stop-button {
+            margin-top: 20px;
+            width: 60px;
+            height: 60px;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .play-button {
+            background-color: green;
+        }
+        .play-button:hover {
+            background-color: darkgreen;
+        }
+        .stop-button {
+            background-color: black;
+        }
+        .stop-button:hover {
+            background-color: #333;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 100px;
+            margin-top: 20px;
+        }
+        .bell-button {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50px;
+            height: 50px;
+            background-color: white;
+            color: black;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="speedometer">
+        <div class="needle" id="needle"></div>
+        <div class="numbers">
+            <span>100</span>
+            <span>120</span>
+            <span>140</span>
+            <span>160</span>
+            <span>180</span>
+            <span>200</span>
+            <span>220</span>
+            <span>0</span>
+            <span>20</span>
+            <span>40</span>
+            <span>60</span>
+            <span>80</span>
+        </div>
+        <div class="center-text">
+            <div class="speed">SPEED</div>
+        </div>
+        <div class="speed-display" id="speed-display">0 km/h</div>
+        <button class="bell-button" id="bell-button">🔔</button>
+    </div>
+    <div class="container">
+        <button class="button" onclick="toggleDropdown()">🎧</button>
+        <button class="button" onclick="document.getElementById('fileInput').click()">📤</button>
+        <button class="button" onclick="requestGPSPermission()">📡</button>
+        <input type="file" id="fileInput" style="display: none;" accept="audio/*" onchange="handleFileSelect(event)" />
+    </div>
+    <div class="dropdown" id="dropdown">
+        <select id="ringtoneSelect" onchange="playRingtone()">
+            <option value="">Select Ringtone</option>
+            <option value="https://www.myinstants.com/media/sounds/doorbell.mp3">Ringtone 1</option>
+            <option value="https://www.soundbible.com/grab.php?id=2020&type=mp3">Ringtone 2</option>
+            <option value="https://www.fesliyanstudios.com/play-mp3/3440">Ringtone 3</option>
+            <option value="https://www.bensound.com/bensound-music/bensound-ukulele.mp3">Ringtone 4</option>
+            <option value="https://www.bensound.com/bensound-music/bensound-sunny.mp3">Ringtone 5</option>
+            <option value="https://harmash.com/tutorials/html/audios/like-ras.mp3">Ringtone 6</option>
+            <option value="https://harmash.com/tutorials/html/audios/like-ras.ogg">Ringtone 7</option>
+            <option value="https://samplelib.com/lib/preview/mp3/sample-3s.mp3">Ringtone 8</option>
+        </select>
+    </div>
+    <div class="audio-container" id="audioContainer">
+        <audio id="audioPlayer">
+            <source id="audioSource" src="" type="audio/mpeg">
+            Your browser does not support audio playback.
+        </audio>
+    </div>
+    <div class="input-container">
+        <input type="text" id="speedLimit" placeholder="Enter speed limit...">
+    </div>
+    <div class="button-container">
+        <button class="stop-button" onclick="stopAll()">⏹️</button>
+        <button class="play-button" onclick="startSpeedometer()">▶️</button>
+    </div>
+
+    <script>
+        let watchId;
+        let isRinging = false;
+        let customAudio = null;
+
+        function toggleDropdown() {
+            var dropdown = document.getElementById('dropdown');
+            if (dropdown.style.display === 'none' || dropdown.style.display === '') {
+                dropdown.style.display = 'block';
+            } else {
+                dropdown.style.display = 'none';
+                stopRingtone();
+            }
+        }
+
+        function playRingtone() {
+            var select = document.getElementById('ringtoneSelect');
+            var selectedOption = select.options[select.selectedIndex];
+            var audioSource = document.getElementById('audioSource');
+            var audioPlayer = document.getElementById('audioPlayer');
+
+            audioSource.src = selectedOption.value;
+            audioPlayer.load();
+            audioPlayer.play();
+        }
+
+        function stopRingtone() {
+            var audioPlayer = document.getElementById('audioPlayer');
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+        }
+
+        function requestGPSPermission() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        alert('GPS enabled. Current location: ' + position.coords.latitude + ', ' + position.coords.longitude);
+                    },
+                    function(error) {
+                        alert('Failed to enable GPS: ' + error.message);
+                    }
+                );
+            } else {
+                alert('Your browser does not support GPS.');
+            }
+        }
+
+        function startSpeedometer() {
+            if (navigator.geolocation) {
+                watchId = navigator.geolocation.watchPosition(
+                    function(position) {
+                        var speed = position.coords.speed || 0;
+                        var speedKmh = (speed * 3.6).toFixed(2); // Convert m/s to km/h
+                        updateSpeedometer(speedKmh);
+                    },
+                    function(error) {
+                        alert('Failed to get speed: ' + error.message);
+                    },
+                    { enableHighAccuracy: true, maximumAge: 0, timeout: 5000 }
+                );
+            } else {
+                alert('Your browser does not support GPS.');
+            }
+        }
+
+        function stopSpeedometer() {
+            if (navigator.geolocation && watchId !== undefined) {
+                navigator.geolocation.clearWatch(watchId);
+            }
+            resetSpeedometer();
+        }
+
+        function updateSpeedometer(speed) {
+            var needle = document.getElementById('needle');
+            var speedDisplay = document.getElementById('speed-display');
+            var bellButton = document.getElementById('bell-button');
+            var speedLimit = parseFloat(document.getElementById('speedLimit').value) || 0;
+            var maxSpeed = 220;
+            var minAngle = -120;
+            var maxAngle = 120;
+            var angle = minAngle + (speed / maxSpeed) * (maxAngle - minAngle);
+
+            needle.style.transform = 'translate(-50%, -100%) rotate(' + angle + 'deg)';
+            speedDisplay.textContent = speed + ' km/h';
+
+            if (speed > speedLimit) {
+                bellButton.style.backgroundColor = 'red';
+                if (!isRinging) {
+                    if (customAudio) {
+                        customAudio.play();
+                    } else {
+                        playRingtone();
+                    }
+                    isRinging = true;
+                }
+            } else {
+                bellButton.style.backgroundColor = 'white';
+                if (isRinging) {
+                    if (customAudio) {
+                        customAudio.pause();
+                        customAudio.currentTime = 0;
+                    } else {
+                        stopRingtone();
+                    }
+                    isRinging = false;
+                }
+            }
+        }
+
+        function resetSpeedometer() {
+            var needle = document.getElementById('needle');
+            var speedDisplay = document.getElementById('speed-display');
+            var bellButton = document.getElementById('bell-button');
+
+            needle.style.transform = 'translate(-50%, -100%) rotate(-120deg)';
+            speedDisplay.textContent = '0 km/h';
+            bellButton.style.backgroundColor = 'white';
+            if (customAudio) {
+                customAudio.pause();
+                customAudio.currentTime = 0;
+            } else {
+                stopRingtone();
+            }
+            isRinging = false;
+        }
+
+        function stopAll() {
+            stopSpeedometer();
+            if (customAudio) {
+                customAudio.pause();
+                customAudio.currentTime = 0;
+            } else {
+                stopRingtone();
+            }
+            resetSpeedometer();
+            document.getElementById('fileInput').value = ''; // Clear the file input
+            document.getElementById('speedLimit').value = ''; // Clear the speed limit input
+            customAudio = null; // Reset custom audio
+        }
+
+        function handleFileSelect(event) {
+            var file = event.target.files[0];
+            if (file) {
+                customAudio = new Audio(URL.createObjectURL(file));
+            }
+        }
+    </script>
+</body>
+</html>
